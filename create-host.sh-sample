@@ -1,0 +1,9 @@
+export CUSTOMER=DESC
+export GATEWAY=192.168.0.1
+export NETMASK=255.255.255.0
+export KICKFILE=preseeds/centos7-8-2003.cfg
+export ORIG_IMAGE=OS-ISOS/CentOS-7-x86_64-NetInstall-2003.iso
+export UEFI_ISO=no
+export KSDEVICE=ens192
+
+bash burn-dvd-iso.sh --HOSTNAME=testvm01.test --ROOTPASSWORD=SecretPasguord --IPADDR=192.168.0.10
