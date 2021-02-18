@@ -26,7 +26,8 @@ function choose_src_initrd {
 	elif [ $OS_NAME == 'debian' ]
 	then	T_INITRD=$DEST_FS/initrd.gz
 	elif  [ $OS_NAME == 'Ubuntu' ]
-	then	T_INITRD=$DEST_FS/install/netboot/ubuntu-installer/$OS_ARCH/initrd.gz
+	then	T_INITRD=$DEST_FS/initrd.gz
+	#then	T_INITRD=$DEST_FS/install/netboot/ubuntu-installer/$OS_ARCH/initrd.gz
 	fi 
 	echo $T_INITRD
 }
@@ -46,7 +47,8 @@ function choose_iso_vmlinuz {
 	if [ $OS_NAME == 'CentOS' ] || [ $OS_NAME == 'RedHat' ] 
 	then	T_VMLIN=vmlinuz
 	elif [ $OS_NAME == 'Ubuntu' ]
-	then	T_VMLIN=/install/vmlinuz
+	#then	T_VMLIN=/install/vmlinuz
+	then	T_VMLIN=/linux
 	elif [ $OS_NAME == 'debian' ]
 	then	T_VMLIN=/linux
 	fi 
@@ -64,17 +66,17 @@ function choose_ksurl {
 }
 
 function choose_isolinux_cfg {
-        if [ $OS_NAME == 'CentOS' ] || [ $OS_NAME == 'RedHat' ] || [ $OS_NAME == 'Ubuntu' ]
+        if [ $OS_NAME == 'CentOS' ] || [ $OS_NAME == 'RedHat' ]
         then    T_ISOLINUX=$DEST_FS/isolinux/isolinux.cfg
-        elif [ $OS_NAME == 'debian' ] 
+        elif [ $OS_NAME == 'debian' ] || [ $OS_NAME == 'Ubuntu' ]
         then    T_ISOLINUX=$DEST_FS/isolinux.cfg
         fi
         echo $T_ISOLINUX
 }
 function choose_isolinux_bin {
-        if [ $OS_NAME == 'CentOS' ] || [ $OS_NAME == 'RedHat' ] || [ $OS_NAME == 'Ubuntu' ]
+        if [ $OS_NAME == 'CentOS' ] || [ $OS_NAME == 'RedHat' ]
         then    T_ISOLINUX=isolinux/isolinux.bin
-        elif [ $OS_NAME == 'debian' ] 
+        elif [ $OS_NAME == 'debian' ] || [ $OS_NAME == 'Ubuntu' ]
         then    T_ISOLINUX=isolinux.bin #mini iso
         fi
         echo $T_ISOLINUX
@@ -159,7 +161,7 @@ default $HOST_DESC
 label $HOST_DESC
   menu label ^Install $HOSTNAME
   kernel $ISO_VMLINUZ
-  append file=$KSURL vga=normal auto=true initrd=/install/initrd-$HOST_DESC.gz  --
+  append file=$KSURL vga=normal auto=true initrd=/install/initrd-$HOST_DESC.gz
 EOI
 	tail -$TAIL_LINES $SRC_ISOLINUX_DEB \
 		|egrep -v "default install|menu default" >> $TMP_ISOLINUX_DEB
@@ -347,12 +349,12 @@ if [ $OS_NAME == 'CentOS' ] || [ $OS_NAME == 'RedHat' ]
 	then
 	VOLID=$HOST_DESC
 
-elif [ $OS_NAME == 'Ubuntu' ]
-	then 
-	SRC_ISOLINUX_DEB=$DEST_FS/isolinux/txt.cfg
-	TGT_ISOLINUX_DEB=$DEST_FS/isolinux/txt.cfg
-	NAMESERVER=$(echo $NAMESERVER|sed -e "s/,/ /")
-elif [ $OS_NAME == 'debian' ]
+#elif [ $OS_NAME == 'Ubuntu' ]
+#	then 
+#	SRC_ISOLINUX_DEB=$DEST_FS/isolinux/txt.cfg
+#	TGT_ISOLINUX_DEB=$DEST_FS/isolinux/txt.cfg
+#	NAMESERVER=$(echo $NAMESERVER|sed -e "s/,/ /")
+elif [ $OS_NAME == 'debian' ] || [ $OS_NAME == 'Ubuntu' ]
 	then 
 	SRC_ISOLINUX_DEB=$DEST_FS/txt.cfg
 	TGT_ISOLINUX_DEB=$DEST_FS/txt.cfg
@@ -378,10 +380,10 @@ if [ -d $ORIG_FS/isolinux ]
 	then rsync -a $ORIG_FS/isolinux $DEST_FS/
 	else mkdir -p $DEST_FS/isolinux/
 fi
-if [ $OS_NAME == 'Ubuntu' ] 
-	then rsync -a $ORIG_FS/install $DEST_FS/ ; fi
+#if [ $OS_NAME == 'Ubuntu' ] 
+#	then rsync -a $ORIG_FS/install $DEST_FS/ ; fi
 
-if [ $OS_NAME == 'debian' ] #taken from miniiso
+if [ $OS_NAME == 'debian' ] || [ $OS_NAME == 'Ubuntu' ] #taken from miniiso
 	then 
 	rsync -a $ORIG_FS/ $DEST_FS/
 	mkdir -p $DEST_FS/install
@@ -471,6 +473,7 @@ umount $ORIG_FS
 ISOHYBRIDMBR=/usr/share/syslinux/isohdpfx.bin
 ############################################################################
 echo "build new isofs"
+mkdir -p tgtiso
 
 if [ $UEFI_ISO == yes ]
 then
