@@ -1,10 +1,10 @@
 ## Welcome to VMWCDLU aka MVCCDVAS homepage
 
-Need of automating your Linux installation though you yearn out old good days when OS were installed from CDs (or floppies...)?
+Need of automating your Linux installation though you yearn out old good days when OS were used to be installed from CDs (or floppies...)?
 
 Now you can have both
 
-This bash script will create an auto-installing bootable iso for your Linux installation withot the need of a DHCP or PXE by raping original distro ISOS. Try it now
+This bash script will create an auto-installing bootable iso for your Linux installation without the need of a DHCP or PXE by raping original distro ISOS.
 
 
 ### Try it now
@@ -42,7 +42,7 @@ We still burn ISOS to CD and insert them in bare metal hardware
 
 #### VMWare rackless style
 
-Transferring ISOS to datastore by scp it's an undeniable pleasure
+Transferring ISOS to VMWare datastore by scp it's an undeniable pleasure
 
 #### VMWare Negotiator syle
 
